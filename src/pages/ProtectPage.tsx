@@ -14,7 +14,7 @@ const ProtectPage: FC<ProtectPageProps> = ({ children }) => {
   console.log("🚀 ~ user:", user);
 
   // view
-  return user ? <>protect!! {children}</> : <Navigate to="/login" />;
+  return user ? <>{children}</> : <Navigate to="/login" />;
 };
 
 export default ProtectPage;
