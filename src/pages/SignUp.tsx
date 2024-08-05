@@ -1,5 +1,8 @@
+import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import React, { useState } from "react";
 import styled from "styled-components";
+import { auth } from "../firebase";
+import { useNavigate } from "react-router-dom";
 
 const SignupContainer = styled.div`
   display: flex;
@@ -67,8 +70,10 @@ const Error = styled.p`
   text-align: center;
 `;
 
-const CreateAccount = () => {
+const SignUp = () => {
   // Logic
+  const navigate = useNavigate();
+
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -76,18 +81,35 @@ const CreateAccount = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    // 하나라도 빈 값이거나 현재 로딩중이면 실행안함
+    if (isLoading || name === "" || email === "" || password === "") return;
 
     try {
+      setIsLoading(true);
+      // TODO: 1. 가입 계정 생성
+      const credential = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
+      console.log("🚀 credential:", credential);
+
+      // TODO: 2. 사용자 프로필이름 지정
+      await updateProfile(credential.user, {
+        displayName: name,
+      });
+
+      // TODO: 3. 홈페이지로 리다이렉트
+      navigate("/");
     } catch (e) {
       // setError()
+      console.log("e", e);
     } finally {
+      setIsLoading(false);
     }
 
-    // TODO: 1. 가입 계정 생성
-    // TODO: 2. 사용자 프로필이름 지정
-    // TODO: 3. 홈페이지로 리다이렉트
     console.log("Account creation attempted with:", { name, email, password });
     // Here you would typically handle the signup logic
   };
@@ -95,7 +117,7 @@ const CreateAccount = () => {
   return (
     <SignupContainer>
       <SignupForm onSubmit={handleSubmit}>
-        <Title>Create Account</Title>
+        <Title>회원가입</Title>
         <InputGroup>
           <Label htmlFor="name">Name</Label>
           <Input
@@ -135,4 +157,4 @@ const CreateAccount = () => {
   );
 };
 
-export default CreateAccount;
+export default SignUp;

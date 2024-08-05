@@ -4,17 +4,22 @@ import Layout from "./components/Layout";
 import Home from "./pages/Home";
 import Profile from "./pages/Profile";
 import Login from "./pages/Login";
-import CreateAccount from "./pages/CreateAccount";
+import SignUp from "./pages/SignUp";
 import { createGlobalStyle } from "styled-components";
 import reset from "styled-reset";
 import Loading from "./components/Loading";
 import { auth } from "./firebase";
+import ProtectPage from "./pages/ProtectPage";
 
 // router 정의
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <Layout />,
+    element: (
+      <ProtectPage>
+        <Layout />
+      </ProtectPage>
+    ),
     children: [
       {
         path: "",
@@ -31,8 +36,8 @@ const router = createBrowserRouter([
     element: <Login />,
   },
   {
-    path: "/create-account",
-    element: <CreateAccount />,
+    path: "/signup",
+    element: <SignUp />,
   },
 ]);
 
@@ -55,6 +60,7 @@ function App() {
   const init = async () => {
     // firebase에서 로그인 데이터 가져오기
     await auth.authStateReady(); // 인증상태가 준비 되었는지
+    console.log("인증 완료", auth);
 
     // 준비된 이후 실행
     setIsLoading(false);
