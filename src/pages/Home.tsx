@@ -9,8 +9,8 @@ const Home = () => {
     console.log("logout");
   };
 
-  const resetPassword = () => {
-    sendPasswordResetEmail(auth, "chutzrit@gmail.com");
+  const resetPassword = async () => {
+    await sendPasswordResetEmail(auth, "chutzrit@gmail.com");
   };
   // view
   return (
