@@ -57,9 +57,10 @@ function App() {
   // logic
   // login시 로딩
   const [isLoading, setIsLoading] = useState(true);
+
   const init = async () => {
     // firebase에서 로그인 데이터 가져오기
-    await auth.authStateReady(); // 인증상태가 준비 되었는지
+    await auth.authStateReady(); // 로그인상태 변화 감지하여 감지가 끝나면 로딩 false
     console.log("인증 완료", auth);
 
     // 준비된 이후 실행

@@ -1,74 +1,19 @@
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import React, { useState } from "react";
-import styled from "styled-components";
 import { auth } from "../firebase";
-import { useNavigate } from "react-router-dom";
-
-const SignupContainer = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-`;
-
-const SignupForm = styled.form`
-  background-color: white;
-  padding: 2rem;
-  border-radius: 8px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  width: 100%;
-  max-width: 400px;
-`;
-
-const Title = styled.h2`
-  text-align: center;
-  color: #1a73e8;
-  margin-bottom: 1.5rem;
-`;
-
-const InputGroup = styled.div`
-  margin-bottom: 1rem;
-`;
-
-const Label = styled.label`
-  display: block;
-  margin-bottom: 0.5rem;
-  color: #555;
-`;
-
-const Input = styled.input`
-  width: 100%;
-  padding: 0.75rem;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  font-size: 1rem;
-  &:focus {
-    outline: none;
-    border-color: #1a73e8;
-  }
-`;
-
-const SubmitButton = styled.button`
-  width: 100%;
-  padding: 0.75rem;
-  background-color: #1a73e8;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: background-color 0.3s;
-  &:hover {
-    background-color: #1557b0;
-  }
-`;
-
-const Error = styled.p`
-  color: #d32f2f;
-  font-size: 0.875rem;
-  margin-top: 0.5rem;
-  text-align: center;
-`;
+import { Link, useNavigate } from "react-router-dom";
+import { FirebaseError } from "firebase/app";
+import {
+  AuthContainer,
+  AuthForm,
+  Error,
+  Input,
+  InputGroup,
+  Label,
+  SubmitButton,
+  Switcher,
+  Title,
+} from "../styles/auth";
 
 const SignUp = () => {
   // Logic
@@ -83,6 +28,8 @@ const SignUp = () => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setError(""); // 에러 초기화
+
     // 하나라도 빈 값이거나 현재 로딩중이면 실행안함
     if (isLoading || name === "" || email === "" || password === "") return;
 
@@ -104,19 +51,15 @@ const SignUp = () => {
       // TODO: 3. 홈페이지로 리다이렉트
       navigate("/");
     } catch (e) {
-      // setError()
-      console.log("e", e);
+      e instanceof FirebaseError && setError(e.message);
     } finally {
       setIsLoading(false);
     }
-
-    console.log("Account creation attempted with:", { name, email, password });
-    // Here you would typically handle the signup logic
   };
 
   return (
-    <SignupContainer>
-      <SignupForm onSubmit={handleSubmit}>
+    <AuthContainer>
+      <AuthForm onSubmit={handleSubmit}>
         <Title>회원가입</Title>
         <InputGroup>
           <Label htmlFor="name">Name</Label>
@@ -152,8 +95,12 @@ const SignUp = () => {
         <SubmitButton type="submit">
           {isLoading ? "Loading.." : "Create Account"}
         </SubmitButton>
-      </SignupForm>
-    </SignupContainer>
+        <Switcher>
+          이미 계정이 있으신가요?
+          <Link to="/login">로그인 하러 가기 &rarr;</Link>
+        </Switcher>
+      </AuthForm>
+    </AuthContainer>
   );
 };
 
