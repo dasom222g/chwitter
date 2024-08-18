@@ -6,3 +6,9 @@ export interface ITweets {
   photo?: string
   createAt: number
 }
+
+export interface IEditTweet {
+  isEdit: boolean
+  tweet: string
+  documentId: string
+}

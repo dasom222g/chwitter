@@ -120,6 +120,7 @@ const PostTweeForm = () => {
       console.error(e);
     } finally {
       setIsLoading(false);
+      setTweet("");
     }
   };
 
