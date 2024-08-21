@@ -5,6 +5,7 @@ import {
   onSnapshot,
   orderBy,
   query,
+  updateDoc,
 } from "firebase/firestore";
 import React, { useEffect, useRef, useState } from "react";
 import { auth, db, storage } from "../firebase";
@@ -88,7 +89,12 @@ const Timline = () => {
   const [editTweet, setEditTweet] = useState<IEditTweet>(initialEditTweet);
 
   const handleSave = async (selectedItem: ITweets) => {
+    const { id } = selectedItem;
     try {
+      const document = doc(db, "tweets", id);
+      updateDoc(document, {
+        tweet: editTweet.tweet,
+      });
     } catch (e) {
       console.error(e);
     } finally {
@@ -162,7 +168,7 @@ const Timline = () => {
       */
 
       // 실시간 데이터
-      unsubscribe = onSnapshot(tweetQuery, (snapshot) => {
+      onSnapshot(tweetQuery, (snapshot) => {
         const tweets = snapshot.docs.map((item) => {
           const { userId, username, tweet, photo, createAt } = item.data();
           const result = {
@@ -215,7 +221,7 @@ const Timline = () => {
           <IconWrap>
             {item.userId === user?.uid && (
               <>
-                {editTweet.isEdit && (
+                {editTweet.isEdit && editTweet.documentId === item.id && (
                   <IconButton type="button" onClick={() => handleSave(item)}>
                     <AiOutlineCheck />
                   </IconButton>

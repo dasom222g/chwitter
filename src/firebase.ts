@@ -29,6 +29,4 @@ export const storage = getStorage(app)
 
 export const db = getFirestore(app)
 
-getStorage()
-
 
